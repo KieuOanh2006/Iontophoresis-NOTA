@@ -1,0 +1,172 @@
+/* --- CÀI ĐẶT CHUNG (Professional Look) --- */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Font chữ hiện đại, nghiêm túc */
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    color: #333; /* Chữ xám đen dễ đọc */
+    background-color: #f9f9f9; /* Nền trắng hơi xám nhẹ cho đỡ chói */
+}
+
+.container {
+    width: 85%;
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px 0;
+}
+
+/* --- THANH MENU (NAVIGATION) --- */
+nav {
+    background-color: #fff;
+    border-bottom: 3px solid #0056b3; /* Viền xanh dương đậm */
+    position: sticky; /* Dính menu lên đầu khi cuộn */
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+nav .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+}
+
+.logo {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #0056b3; /* Màu xanh thương hiệu */
+    text-transform: uppercase;
+    text-decoration: none;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 30px;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #555;
+    font-weight: 600;
+    transition: color 0.3s;
+    font-size: 1em;
+}
+
+.nav-links a:hover, .nav-links a.active {
+    color: #0056b3; /* Hover đổi màu xanh */
+}
+
+/* --- PHẦN TIÊU ĐỀ & HERO --- */
+header.hero {
+    background: linear-gradient(135deg, #0056b3, #007bff); /* Gradient xanh chuyên nghiệp */
+    color: white;
+    padding: 60px 0;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+header.hero h1 {
+    font-size: 2.5em;
+    margin: 0 0 10px 0;
+}
+
+header.hero p {
+    font-size: 1.2em;
+    opacity: 0.9;
+}
+
+/* --- CÁC KHỐI NỘI DUNG --- */
+.section-title {
+    color: #0056b3;
+    border-left: 5px solid #0056b3;
+    padding-left: 15px;
+    margin-top: 40px;
+    margin-bottom: 20px;
+    font-size: 1.8em;
+}
+
+.content-box {
+    background: white;
+    padding: 30px;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+    border: 1px solid #e0e0e0;
+}
+
+/* --- BẢNG SỐ LIỆU (Table) --- */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    background: white;
+}
+
+th, td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+th {
+    background-color: #0056b3;
+    color: white;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+/* --- NÚT BẤM (BUTTONS) --- */
+.btn {
+    display: inline-block;
+    padding: 12px 30px;
+    background-color: #fff;
+    color: #0056b3;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 4px;
+    border: 2px solid white;
+    transition: all 0.3s;
+    margin-top: 15px;
+}
+
+.btn:hover {
+    background-color: transparent;
+    color: white;
+}
+
+.btn-primary {
+    background-color: #0056b3;
+    color: white;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #004494;
+}
+
+/* --- FOOTER --- */
+footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 20px 0;
+    margin-top: 50px;
+    font-size: 0.9em;
+}
+
+/* --- 2 CỘT --- */
+.row {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+.col {
+    flex: 1;
+    min-width: 300px;
+}

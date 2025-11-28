@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IONTOPHORESIS - Vòng tay công nghệ cao cấp</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+   
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+
+
+    <style>
+        /* --- BẢNG MÀU & FONT CỦA AURA 3D (Tùy chỉnh cho ION) --- */
+        :root {
+            --primary-blue: #2B92E4;   /* Xanh thương hiệu */
+            --accent-pink: #F8B5C1;    /* Hồng nhấn */
+            --soft-gray: #F0F2F5;      /* Nền xám nhạt */
+            --text-dark: #333;
+            --text-light-gray: #777;
+            --border-light: #e0e0e0;
+            --button-primary: #007bff; /* Xanh nút */
+            --button-hover: #0056b3;
+            --input-border: #ccc;
+        }
+
+
+        /* --- CẤU HÌNH CHUNG --- */
+        body {
+            font-family: 'Montserrat', sans-serif;  
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            color: var(--text-dark);
+            background-color: var(--soft-gray);
+            scroll-behavior: smooth;
+        }
+
+
+        .container { width: 90%; max-width: 1200px; margin: auto; padding: 0 15px; }
+        section { padding: 60px 0; background-color: #fff; margin-bottom: 20px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+
+
+        /* --- NAVIGATION & LOGIN BAR --- */
+        header {
+            background: #fff;
+            border-bottom: 1px solid var(--border-light);
+            position: sticky; top: 0; z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        header .container { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; }
+        .logo { font-size: 1.6em; font-weight: 800; color: var(--primary-blue); text-transform: uppercase; cursor: pointer; }
+        .nav-links { list-style: none; display: flex; gap: 30px; margin: 0; padding: 0; }
+        .nav-links li { cursor: pointer; color: var(--text-light-gray); font-weight: 600; position: relative; }
+        .nav-links li:hover { color: var(--primary-blue); }
+        .nav-links li.active { color: var(--primary-blue); }
+        .nav-links li.active::after {
+            content: '';
+            position: absolute; bottom: -5px; left: 0;
+            width: 100%; height: 2px; background-color: var(--primary-blue);
+        }
+       
+        .nav-right-icons { display: flex; align-items: center; gap: 15px; }
+        .cart-icon { position: relative; font-size: 1.3em; color: var(--primary-blue); cursor: pointer; }
+        .cart-count { background-color: var(--accent-pink); color: white; font-size: 0.75em; padding: 2px 6px; border-radius: 50%; font-weight: bold; position: absolute; top: -10px; right: -10px; }
+       
+        /* --- HOOK TEXT STYLE --- */
+        .hook-section {
+            background-color: var(--soft-gray);
+            padding: 40px;
+            border-radius: 20px;
+            margin-top: 30px;
+            text-align: center;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+        .hook-section h3 { color: var(--primary-blue); font-weight: 800; font-size: 1.6em; margin-bottom: 20px; }
+        .hook-section ul { list-style: none; padding: 0; margin-bottom: 25px; font-size: 1.1em; }
+        .hook-section ul li { margin-bottom: 10px; color: var(--text-dark); font-weight: 600; }
+
+
+        /* --- LOGIN/REGISTER STYLE --- */
+        .login-box { max-width: 400px; margin: auto; padding: 40px; text-align: center; background: white; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .login-box h3 { font-size: 2em; color: var(--primary-blue); margin-bottom: 25px; }
+        .form-input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        .btn-auth { background-color: var(--primary-blue); color: white; padding: 12px 0; width: 100%; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.3s; margin-top: 5px; border: none;}
+        .btn-auth:hover { background-color: var(--button-hover); }
+
+
+        /* --- PRODUCT CATALOG --- */
+        .catalog-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin-top: 50px; }
+        .product-card { width: 100%; padding: 20px; background: white; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); text-align: center; transition: transform 0.3s; cursor: pointer; }
+        .product-card:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .product-card model-viewer { height: 200px; width: 100%; }
+        .product-card .price { font-size: 1.4em; color: var(--primary-blue); font-weight: 800; }
+       
+        /* --- PDP LAYOUT & STYLES --- */
+        .product-main-view { display: flex; flex-wrap: wrap; gap: 30px; justify-content: center; }
+        .col-3d-viewer { flex: 1; min-width: 450px; padding: 20px; background: white; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .col-3d-viewer model-viewer { width: 100%; height: 450px; background-color: #f0f4f8; border-radius: 15px; }
+        .col-purchase-info { flex: 1; min-width: 350px; padding: 20px; background: white; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .product-name-detail { font-size: 2em; font-weight: 800; color: var(--text-dark); margin-bottom: 5px; }
+
+
+        /* --- CART & REVIEW STYLES --- */
+        .cart-summary { background: white; padding: 30px; border-radius: 15px; }
+        .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid #eee; }
+        .cart-total { text-align: right; font-size: 1.5em; font-weight: 700; margin-top: 20px; padding-top: 15px; border-top: 2px solid var(--accent-pink); }
+
+
+        .rating-stars { font-size: 1.8em; cursor: pointer; color: #ccc; }
+        .rating-stars .fas { color: #f1c40f; }
+        .review-card-dynamic { background: var(--soft-gray); padding: 20px; border-radius: 10px; margin-bottom: 15px; border-left: 5px solid var(--accent-pink); }
+
+
+        /* --- Global styles for hidden sections --- */
+        .page-section { display: none; padding: 50px 0; }
+        #trang-chu { display: block; }
+    </style>
+</head>
+<body>
+
+
+    <header>
+        <div class="container">
+            <div class="logo" onclick="switchPage('trang-chu')">IONTOPHORESIS</div>
+           
+            <ul class="nav-links">
+                <li onclick="switchPage('trang-chu')" class="active" id="btn-trang-chu">Trang Chủ</li>
+                <li onclick="switchPage('san-pham')" id="btn-san-pham">Mua Hàng</li>
+                <li onclick="switchPage('danh-gia')" id="btn-danh-gia">Đánh Giá</li>
+                <li onclick="switchPage('lien-he')" id="btn-lien-he">Liên Hệ</li>
+            </ul>
+
+
+            <div class="nav-right-icons">
+                <div id="auth-area" style="display: flex; align-items: center; gap: 15px;">
+                    <li onclick="switchPage('login')" id="btn-login" style="list-style: none; padding: 0 10px; font-weight: 600; cursor: pointer;">Đăng nhập</li>
+                </div>
+               
+                <div class="cart-icon" onclick="switchPage('gio-hang')">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count" id="cart-counter">0</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+
+    <div id="trang-chu" class="page-section">
+        <div class="container">
+            <div class="hook-section">
+                <h3>Có những chi tiết nhỏ ảnh hưởng đến hình ảnh của bạn nhiều hơn bạn nghĩ.</h3>
+                <ul>
+                    <li><i class="fas fa-dot-circle" style="color: var(--primary-blue); margin-right: 8px;"></i> Một cái bắt tay không tự tin.</li>
+                    <li><i class="fas fa-dot-circle" style="color: var(--primary-blue); margin-right: 8px;"></i> Một trang giấy bị lem.</li>
+                    <li><i class="fas fa-dot-circle" style="color: var(--primary-blue); margin-right: 8px;"></i> Một cú trượt chuột trong lúc đang tập trung cao độ.</li>
+                </ul>
+                <p><strong>Vòng tay Iontophoresis mini giải quyết điều đó theo cách tinh tế nhất:</strong> Đeo như phụ kiện, hoạt động như thiết bị y tế ứng dụng công nghệ tương lai.</p>
+                <p>Chỉ **15 phút sử dụng** trước khi làm việc hoặc thi đấu — và đôi tay của bạn luôn ổn định trong nhiều giờ liền.</p>
+            </div>
+        </div>
+       
+        <div class="container" style="margin-top: 50px;">
+            <h2 class="section-title">Chọn Bộ Sưu Tập Của Bạn</h2>
+
+
+            <div class="catalog-grid">
+                <div class="product-card" onclick="loadProductDetailPage('Base')">
+                    <model-viewer src="VongTay.glb" shadow-intensity="1" camera-controls auto-rotate style="height: 200px;"></model-viewer>
+                    <h4>Vòng Tiêu Chuẩn (Base Model)</h4>
+                    <p class="price">749.000 VNĐ</p>
+                    <button class="btn-main" style="padding: 8px 20px; font-size: 0.9em;">Xem chi tiết</button>
+                </div>
+
+
+                <div class="product-card" onclick="loadProductDetailPage('MenPremium')">
+                    <model-viewer src="VongTayNam.glb" shadow-intensity="1" camera-controls auto-rotate style="height: 200px;"></model-viewer>
+                    <h4>Vòng Nam (Performance Edition)</h4>
+                    <p class="price">999.000 VNĐ</p>
+                    <button class="btn-main" style="padding: 8px 20px; font-size: 0.9em;">Xem chi tiết</button>
+                </div>
+
+
+                <div class="product-card" onclick="loadProductDetailPage('Women')">
+                    <model-viewer src="VongNu.glb" shadow-intensity="1" camera-controls auto-rotate style="height: 200px;"></model-viewer>
+                    <h4>Vòng Nữ (Elegant Edition)</h4>
+                    <p class="price">849.000 VNĐ</p>
+                    <button class="btn-main" style="padding: 8px 20px; font-size: 0.9em;">Xem chi tiết</button>
+                </div>
+               
+                <div class="product-card" onclick="loadProductDetailPage('Men')">
+                    <model-viewer src="VongNam.glb" shadow-intensity="1" camera-controls auto-rotate style="height: 200px;"></model-viewer>
+                    <h4>Vòng Nam (Classic Edition)</h4>
+                    <p class="price">899.000 VNĐ</p>
+                    <button class="btn-main" style="padding: 8px 20px; font-size: 0.9em;">Xem chi tiết</button>
+                </div>
+            </div>
+
+
+            <div class="hook-section glass-box" style="background-color: var(--soft-gray); margin-top: 40px; border: 2px dashed var(--primary-blue);">
+                <h3 style="color: var(--primary-blue);">🔥 Hãy là những khách hàng đầu tiên của NOTA</h3>
+                <p style="font-size: 1.2em; font-weight: 700;">Nhận ưu đãi **10%** cho đơn hàng đầu tiên ngay hôm nay!</p>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="san-pham" class="page-section">
+        <div class="container">
+            <h2 class="section-title" style="text-align: left;">Chi Tiết Sản Phẩm & Mua Hàng</h2>
+           
+            <div class="product-main-view">
+               
+                <div class="col-3d-viewer">
+                    <h3 style="color: var(--primary-blue); text-align: center;">Trải Nghiệm 3D</h3>
+                    <p style="text-align: center; font-size: 0.9em; color: var(--text-light-gray);">Xoay mô hình để xem mọi góc độ. Bấm để tạm dừng.</p>
+                   
+                    <model-viewer
+                        id="pdp-model-viewer"
+                        src="VongTay.glb"
+                        alt="Vòng tay Iontophoresis Mini 3D"
+                        shadow-intensity="1"
+                        camera-controls
+                        auto-rotate
+                        ar
+                        style="width: 100%; height: 450px; background-color: #f0f4f8; border-radius: 15px;">
+                       
+                        <div class="engraving-text" id="engravingDisplay3D" style="display: none;" slot="poster">NOTA</div>
+
+
+                    </model-viewer>
+                </div>
+
+
+                <div class="col-purchase-info">
+                    <div class="glass-box">
+                        <p class="product-name-detail" id="pdp-name-display">Vòng Tay Iontophoresis (Tiêu Chuẩn)</p>
+                        <p class="product-status"><i class="fas fa-check-circle"></i> Còn hàng</p>
+
+
+                        <div class="price-area">
+                            <span class="price-display" id="pdp-price-display">749.000 VNĐ</span>
+                            <span style="color: #c0392b; font-weight: 700; font-size: 0.9em;">(Ưu đãi 10% đơn đầu tiên)</span>
+                        </div>
+
+
+                        <div style="margin-top: 20px;">
+                            <p style="font-weight: 700;">Dòng Sản phẩm:</p>
+                            <select class="custom-input">
+                                <option>Màu Xanh Navy</option>
+                                <option>Màu Hồng Pastel</option>
+                                <option>Màu Đen Cá Tính</option>
+                            </select>
+
+
+                            <p style="font-weight: 700; margin-top: 15px;">Khắc tên (miễn phí):</p>
+                            <input type="text" class="custom-input" placeholder="Nhập tên (Max 10 ký tự)..." oninput="updateEngraving3D(this.value)" maxlength="10">
+                        </div>
+
+
+                        <div style="margin-top: 30px; border-top: 1px dashed var(--soft-gray); padding-top: 20px;">
+                            <button class="btn-main btn-buy-now" onclick="addToCart()">
+                                <i class="fas fa-shopping-bag"></i> THÊM VÀO GIỎ
+                            </button>
+                            <button class="btn-main btn-buy-now" style="background: var(--primary-blue);" onclick="buyNow()">
+                                <i class="fas fa-bolt"></i> MUA NGAY
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="glass-box" style="margin-top: 30px;">
+                <h3 style="border-bottom: 3px solid var(--accent-pink); padding-bottom: 10px; margin-bottom: 20px;">Thông số kỹ thuật & Công dụng</h3>
+
+
+                <div class="row">
+                    <div class="col">
+                         <h4 style="color: var(--primary-blue); margin-top: 0;">Thông số kỹ thuật</h4>
+                         <table class="specs-table">
+                            <tr><td>Công nghệ</td><td>Iontophoresis (Điện di ion)</td></tr>
+                            <tr><td>Điện cực</td><td>2 cực Thép 316L + Pad Hydrogel</td></tr>
+                            <tr><td>Cường độ dòng</td><td>0.5 - 2.0 mA (3 chế độ trị liệu)</td></tr>
+                            <tr><td>Pin</td><td>Li-ion 3.7V, sạc Type-C</td></tr>
+                            <tr><td>Chất liệu dây</td><td>Silicone y tế</td></tr>
+                            <tr><td>Thời gian trị liệu</td><td>15 - 20 phút/lần</td></tr>
+                        </table>
+                    </div>
+                   
+                    <div class="col">
+                        <h4 style="color: var(--primary-blue); margin-top: 0;">Công dụng chính</h4>
+                        <ul>
+                            <li><strong>Kiểm soát mồ hôi:</strong> Ức chế tuyến mồ hôi tạm thời, giữ tay khô ráo nhiều giờ liền.</li>
+                            <li><strong>Tăng sự tự tin:</strong> Loại bỏ mặc cảm tâm lý, tự tin trong giao tiếp và công việc.</li>
+                            <li><strong>Hiệu suất làm việc:</strong> Khắc phục trơn trượt khi cầm dụng cụ, tăng độ chính xác khi dùng thiết bị điện tử.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="gio-hang" class="page-section">
+    <div class="container" style="max-width: 900px;">
+        <h2 class="section-title">Giỏ Hàng Của Bạn</h2>
+
+        <div class="glass-box cart-summary">
+            
+            <p id="empty-cart-message" style="text-align:center; color:#888; display:none;">
+                Giỏ hàng đang trống.
+            </p>
+
+            <div id="cart-item-list"></div>
+
+            <div id="cart-checkout-area" style="margin-top: 20px; display:none;">
+                <h3 class="cart-total">
+                    Tổng tiền: <span id="cart-total-amount">0 VNĐ</span>
+                </h3>
+
+                <button class="btn-main"
+                        style="width: 100%; margin-top: 20px; background: #28a745;"
+                        onclick="switchPage('thanh-toan'); renderCheckout();">
+                    🔒 Thanh Toán
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="thanh-toan" class="page-section">
+    <div class="container" style="max-width: 900px;">
+        <h2 class="section-title">Thanh Toán & Giao Hàng</h2>
+
+        <div class="glass-box" style="padding: 25px; border-radius: 15px;">
+            
+            <h3 style="margin-bottom: 15px;">📍 Địa Chỉ Nhận Hàng</h3>
+            <input id="checkout-name" class="custom-input" placeholder="Họ và tên">
+            <input id="checkout-phone" class="custom-input" placeholder="Số điện thoại">
+            <input id="checkout-address" class="custom-input" placeholder="Địa chỉ giao hàng">
+
+            <h3 style="margin-top: 25px;">🛒 Sản phẩm</h3>
+            <div id="checkout-items"></div>
+
+            <h3 style="margin-top: 25px;">💳 Phương thức thanh toán</h3>
+            <select id="checkout-payment" class="custom-input">
+                <option>Thanh toán khi nhận hàng (COD)</option>
+                <option>Chuyển khoản ngân hàng</option>
+            </select>
+
+            <h3 style="text-align:right; margin-top: 30px;">
+                Tổng thanh toán: 
+                <span id="checkout-total" style="font-weight:800; color:#c0392b;">0 VNĐ</span>
+            </h3>
+
+            <button class="btn-main" style="width:100%; background:#ff4500; margin-top:15px;"
+                onclick="submitOrder()">
+                ĐẶT HÀNG
+            </button>
+        </div>
+    </div>
+</div>
+
+    <div id="danh-gia" class="page-section">
+        <div class="container">
+            <h2 class="section-title">Cộng Đồng Nói Gì?</h2>
+           
+            <div class="glass-box" id="review-input-area">
+                <h3 style="color: var(--primary-blue);">Chia sẻ trải nghiệm của bạn</h3>
+                <div id="current-user-review-state">
+                    <p style="color: red; font-weight: 600;">Bạn cần Đăng nhập để viết đánh giá.</p>
+                    <button class="btn-main" onclick="switchPage('login')">Đăng nhập ngay</button>
+                </div>
+               
+                <div id="review-form-area" style="display: none;">
+                    <p style="font-weight: 700;">Đánh giá của bạn:</p>
+                    <div id="rating-stars" class="rating-stars">
+                        <i class="far fa-star" data-rating="1" onclick="setRating(1)"></i>
+                        <i class="far fa-star" data-rating="2" onclick="setRating(2)"></i>
+                        <i class="far fa-star" data-rating="3" onclick="setRating(3)"></i>
+                        <i class="far fa-star" data-rating="4" onclick="setRating(4)"></i>
+                        <i class="far fa-star" data-rating="5" onclick="setRating(5)"></i>
+                    </div>
+                    <textarea id="review-text-input" style="width: 100%; padding: 10px; border-radius: 10px; border: 1px solid #ddd; margin-top: 10px;" rows="3" placeholder="Viết đánh giá của bạn (tối thiểu 10 ký tự)..."></textarea>
+                    <button class="btn-main" style="margin-top: 10px; font-size: 0.9em; padding: 8px 25px;" onclick="submitReview()">Gửi Đánh Giá</button>
+                </div>
+            </div>
+
+
+            <div id="review-list-container" class="review-grid">
+                <p style="text-align: center; width: 100%;">Đang tải đánh giá...</p>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="lien-he" class="page-section">
+        <div class="container">
+            <h2 class="section-title">Liên Hệ Nhóm NOTA</h2>
+            <div class="glass-box" style="max-width: 600px; margin: auto;">
+                <p style="text-align: center;"><i class="fas fa-map-marker-alt"></i> Đại học Kinh tế TP.HCM (UEH)</p>
+                <p style="text-align: center;"><i class="fas fa-envelope"></i> 2108baonhi@gmail.com</p>
+               
+                <form style="margin-top: 20px;">
+                    <input type="text" placeholder="Tên của bạn" class="custom-input">
+                    <input type="email" placeholder="Email" class="custom-input">
+                    <textarea placeholder="Lời nhắn..." rows="4" class="custom-input"></textarea>
+                    <button type="button" class="btn-main" style="width: 100%;">Gửi Tin Nhắn</button>
+                </form>
+            </div>
+        </div>
+    </div>
+   
+    <div id="login" class="page-section">
+        <div class="container">
+            <div class="glass-box login-box">
+                <h3 id="auth-title">Đăng Nhập</h3>
+                <p id="auth-message" style="color: red; margin-bottom: 15px; font-weight: 600; display: none;"></p>
+               
+                <form id="auth-form">
+                    <input type="email" id="auth-email" placeholder="Email (Tên đăng nhập)" class="form-input" required>
+                    <input type="password" id="auth-password" placeholder="Mật khẩu" class="form-input" required>
+                   
+                    <button type="submit" class="btn-auth" id="main-auth-btn">ĐĂNG NHẬP</button>
+                    <p style="margin-top: 15px; font-size: 0.9em; color: #555;">
+                        Chưa có tài khoản?
+                        <a href="#" id="toggle-auth-mode" style="color: var(--primary-blue); font-weight: 700;" onclick="event.preventDefault(); toggleAuthMode();">Đăng ký ngay</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <footer>
+        <div class="container">
+            <p><strong>IONTOPHORESIS MINI</strong> - Dự án Khởi nghiệp UEH 2025</p>
+            <p style="font-size: 0.8em; opacity: 0.7;">Designed by NOTA Team</p>
+        </div>
+    </footer>
+
+
+    <script>
+        // --- TRẠNG THÁI TOÀN CỤC ---
+        const PRODUCT_CATALOG = {
+            'Base': { name: "Vòng Tay Iontophoresis (Tiêu Chuẩn)", model: "VongTay.glb", price: 749000, displayPrice: "749.000 VNĐ" },
+            'MenPremium': { name: "Vòng Nam (Performance Edition)", model: "VongTayNam.glb", price: 999000, displayPrice: "999.000 VNĐ" },
+            'Women': { name: "Vòng Nữ (Elegant Edition)", model: "VongNu.glb", price: 849000, displayPrice: "849.000 VNĐ" },
+            'Men': { name: "Vòng Nam (Classic Edition)", model: "VongNam.glb", price: 899000, displayPrice: "899.000 VNĐ" }
+        };
+       
+        let cartItems = [];
+        let currentPDPItemId = 'Base';
+        let currentRating = 0; // Trạng thái đánh giá
+        let currentUser = null; // Trạng thái người dùng đã đăng nhập
+        let authMode = 'login'; // 'login' hoặc 'register'
+
+
+        // --- HÀM TIỆN ÍCH ---
+
+
+        // Khởi tạo/Lấy dữ liệu từ LocalStorage
+        function initData() {
+            // Lấy dữ liệu giỏ hàng (nếu có)
+            const storedCart = localStorage.getItem('cart');
+            if (storedCart) cartItems = JSON.parse(storedCart);
+            document.getElementById('cart-counter').innerText = cartItems.length;
+
+
+            // Kiểm tra người dùng đã đăng nhập chưa
+            const loggedInUser = localStorage.getItem('currentUser');
+            if (loggedInUser) {
+                currentUser = JSON.parse(loggedInUser);
+                updateAuthUI(true);
+            }
+        }
+       
+        // Cập nhật giao diện Đăng nhập/Logout
+        function updateAuthUI(isLoggedIn) {
+            const authArea = document.getElementById('auth-area');
+            if (isLoggedIn && currentUser) {
+                authArea.innerHTML = `
+                    <p style="font-weight: 700; color: var(--text-dark);">Chào, ${currentUser.email.split('@')[0]}</p>
+                    <a href="#" style="color: var(--primary-blue); font-weight: 700; text-decoration: none;" onclick="logoutUser()">
+                        (Thoát)
+                    </a>
+                `;
+            } else {
+                 authArea.innerHTML = `
+                    <li onclick="switchPage('login')" id="btn-login" style="list-style: none; padding: 0 10px; font-weight: 600; cursor: pointer;">Đăng nhập</li>
+                `;
+            }
+        }
+
+
+        // --- LOGIC GIỎ HÀNG ---
+       function addToCart() {
+        const product = PRODUCT_CATALOG[currentPDPItemId];
+            if (!product) return;
+             let existingItem = cartItems.find(item => item.id === currentPDPItemId);
+              if (existingItem) {
+        existingItem.quantity += 1;
+    } else {
+        cartItems.push({
+            id: currentPDPItemId,
+            name: product.name,
+            price: product.price,
+            displayPrice: product.displayPrice,
+            quantity: 1
+        });
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cartItems));
+    document.getElementById("cart-counter").innerText = cartItems.length;
+
+    alert(`Đã thêm 1 x ${product.name} vào giỏ hàng!`);
+}
+
+        function renderCartPage() {
+    const listContainer = document.getElementById('cart-item-list');
+    const totalAmountSpan = document.getElementById('cart-total-amount');
+    const emptyMessage = document.getElementById('empty-cart-message');
+    const checkoutArea = document.getElementById('cart-checkout-area');
+
+    listContainer.innerHTML = '';
+    let total = 0;
+
+    if (cartItems.length === 0) {
+        emptyMessage.style.display = 'block';
+        checkoutArea.style.display = 'none';
+        return;
+    }
+
+    emptyMessage.style.display = 'none';
+    checkoutArea.style.display = 'block';
+
+    cartItems.forEach((item, index) => {
+        const itemDiv = document.createElement("div");
+        itemDiv.classList.add("cart-item");
+
+        itemDiv.innerHTML = `
+            <span>${item.name}</span>
+
+            <div style="display:flex; align-items:center; gap:10px;">
+                <button onclick="updateQuantity(${index}, -1)"
+                    style="padding:5px 10px;">-</button>
+
+                <span>${item.quantity}</span>
+
+                <button onclick="updateQuantity(${index}, 1)"
+                    style="padding:5px 10px;">+</button>
+            </div>
+
+            <span>${(item.price * item.quantity).toLocaleString('vi-VN')} VNĐ</span>
+
+            <button onclick="removeFromCart(${index})"
+                style="color:red; border:none; background:none; cursor:pointer;">
+                Xóa
+            </button>
+        `;
+
+        listContainer.appendChild(itemDiv);
+        total += item.price * item.quantity;
+    });
+
+    totalAmountSpan.innerText = total.toLocaleString('vi-VN') + ' VNĐ';
+}
+function updateQuantity(index, change) {
+    cartItems[index].quantity += change;
+
+    if (cartItems[index].quantity <= 0) {
+        cartItems.splice(index, 1);
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cartItems));
+    renderCartPage();
+    document.getElementById("cart-counter").innerText = cartItems.length;
+}
+
+function removeFromCart(index) {
+    cartItems.splice(index, 1);
+
+    localStorage.setItem("cart", JSON.stringify(cartItems));
+    renderCartPage();
+    document.getElementById("cart-counter").innerText = cartItems.length;
+}
+function buyNow() {
+    // Xóa giỏ hàng cũ
+    cartItems = [];
+
+    // Thêm sản phẩm hiện tại vào giỏ
+    const product = PRODUCT_CATALOG[currentPDPItemId];
+    cartItems.push({
+        id: currentPDPItemId,
+        name: product.name,
+        price: product.price,
+        quantity: 1
+    });
+
+    localStorage.setItem("cart", JSON.stringify(cartItems));
+    document.getElementById("cart-counter").innerText = 1;
+
+    // Chuyển sang trang checkout
+    switchPage("thanh-toan");
+    renderCheckout();
+}
+        // --- LOGIC ĐĂNG NHẬP/ĐĂNG KÝ (FIXED) ---
+       
+        function toggleAuthMode() {
+            authMode = authMode === 'login' ? 'register' : 'login';
+            document.getElementById('auth-title').innerText = authMode === 'login' ? 'Đăng Nhập' : 'Đăng Ký Tài Khoản';
+            document.getElementById('main-auth-btn').innerText = authMode === 'login' ? 'ĐĂNG NHẬP' : 'ĐĂNG KÝ';
+            document.getElementById('toggle-auth-mode').innerText = authMode === 'login' ? 'Đăng ký ngay' : 'Quay lại đăng nhập';
+            document.getElementById('auth-message').style.display = 'none';
+        }
+
+
+        function loginUser(email, password) {
+            const storedUsers = JSON.parse(localStorage.getItem('users') || '[]');
+            const user = storedUsers.find(u => u.email === email && u.password === password);
+
+
+            if (user) {
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                currentUser = user;
+                updateAuthUI(true);
+                alert('Đăng nhập thành công!');
+                switchPage('trang-chu');
+            } else {
+                document.getElementById('auth-message').innerText = 'Sai email hoặc mật khẩu.';
+                document.getElementById('auth-message').style.display = 'block';
+            }
+        }
+
+
+        function registerUser(email, password) {
+            let storedUsers = JSON.parse(localStorage.getItem('users') || '[]');
+
+
+            if (storedUsers.find(u => u.email === email)) {
+                document.getElementById('auth-message').innerText = 'Email này đã được đăng ký.';
+                document.getElementById('auth-message').style.display = 'block';
+                return;
+            }
+
+
+            const newUser = { email, password };
+            storedUsers.push(newUser);
+            localStorage.setItem('users', JSON.stringify(storedUsers));
+           
+            document.getElementById('auth-message').innerText = 'Đăng ký thành công! Vui lòng đăng nhập.';
+            document.getElementById('auth-message').style.display = 'block';
+            toggleAuthMode(); // Chuyển sang chế độ đăng nhập
+        }
+       
+        function logoutUser() {
+            localStorage.removeItem('currentUser');
+            currentUser = null;
+            updateAuthUI(false);
+            alert('Đã đăng xuất.');
+            switchPage('trang-chu');
+        }
+
+
+        // --- LOGIC ĐÁNH GIÁ (FIXED) ---
+
+
+        function getReviews() {
+            return JSON.parse(localStorage.getItem('reviews') || JSON.stringify([
+                // Đánh giá mặc định
+                { user: 'Tuấn Hưng (VĐV)', text: "Từ khi dùng **Active Grip**, mình đánh cầu lông tự tin hẳn, không còn bị văng vợt nữa. Cảm giác tay khô ráo rất thích!", rating: 5 },
+                { user: 'Bảo Nhi (SV)', text: "Mình mua bản **Couple** với người yêu. Thiết kế xinh xỉu, đeo đi học không ai biết là máy trị liệu luôn.", rating: 4 },
+            ]));
+        }
+
+
+        function setRating(rating) {
+            currentRating = rating;
+            const stars = document.querySelectorAll('#rating-stars i');
+            stars.forEach(star => {
+                if (parseInt(star.getAttribute('data-rating')) <= rating) {
+                    star.classList.remove('far');
+                    star.classList.add('fas');
+                } else {
+                    star.classList.remove('fas');
+                    star.classList.add('far');
+                }
+            });
+        }
+
+
+        function renderStars(rating) {
+            let html = '';
+            for (let i = 1; i <= 5; i++) {
+                html += `<i class="fas fa-star" style="color: ${i <= rating ? '#f1c40f' : '#ccc'};"></i>`;
+            }
+            return html;
+        }
+
+
+        function renderReviews() {
+            const container = document.getElementById('review-list-container');
+            const reviewFormArea = document.getElementById('review-form-area');
+            const userReviewState = document.getElementById('current-user-review-state');
+           
+            const reviews = getReviews();
+            container.innerHTML = '';
+
+
+            // Cấu hình giao diện form
+            if (currentUser) {
+                userReviewState.style.display = 'none';
+                reviewFormArea.style.display = 'block';
+                setRating(0); // Reset stars
+            } else {
+                userReviewState.style.display = 'block';
+                reviewFormArea.style.display = 'none';
+            }
+
+
+            // Render reviews
+            reviews.forEach(review => {
+                const card = document.createElement('div');
+                card.classList.add('review-card-dynamic');
+                card.innerHTML = `
+                    <div class="stars">${renderStars(review.rating)}</div>
+                    <p>${review.text}</p>
+                    <p class="reviewer-info">— ${review.user}</p>
+                `;
+                container.appendChild(card);
+            });
+        }
+       
+        function submitReview() {
+            if (!currentUser) return alert('Vui lòng đăng nhập để đánh giá.');
+            if (currentRating === 0) return alert('Vui lòng chọn số sao để đánh giá.');
+           
+            const reviewText = document.getElementById('review-text-input').value;
+            if (reviewText.length < 10) return alert('Nội dung đánh giá phải có ít nhất 10 ký tự.');
+
+
+            const newReview = {
+                user: currentUser.email,
+                text: reviewText,
+                rating: currentRating,
+            };
+
+
+            let storedReviews = getReviews().filter(r => r.user !== newReview.user); // Xóa review cũ của user này
+            storedReviews.unshift(newReview); // Thêm review mới lên đầu
+            localStorage.setItem('reviews', JSON.stringify(storedReviews));
+           
+            document.getElementById('review-text-input').value = '';
+            currentRating = 0;
+            renderReviews();
+            alert('Đánh giá của bạn đã được gửi thành công!');
+        }
+
+
+
+
+        // --- CHUYỂN TRANG CHÍNH (Đã sửa lỗi Active Menu và Load PDP) ---
+        function loadProductDetailPage(itemId) {
+            const product = PRODUCT_CATALOG[itemId];
+            const viewer = document.getElementById('pdp-model-viewer');
+           
+            if (product) {
+                currentPDPItemId = itemId;
+
+
+                // FIX BUG 1: Buộc Model Viewer reload bằng cách xóa và gán lại SRC
+                viewer.removeAttribute('src');
+                setTimeout(() => {
+                    viewer.setAttribute('src', product.model);
+                }, 50);
+               
+                // Cập nhật Thông tin mua hàng
+                document.getElementById('pdp-name-display').innerText = product.name;
+                document.getElementById('pdp-price-display').innerText = product.displayPrice;
+               
+                switchPage('san-pham');
+            } else {
+                alert("Lỗi: Không tìm thấy ID sản phẩm.");
+            }
+        }
+
+
+        function switchPage(pageId, itemId = null) {
+            // Ẩn tất cả các trang
+            document.querySelectorAll('.page-section').forEach(p => p.style.display = 'none');
+            // Hiện trang cần thiết
+            document.getElementById(pageId).style.display = 'block';
+           
+            // Xử lý Active Menu
+            document.querySelectorAll('.nav-links li, #auth-area li').forEach(l => l.classList.remove('active'));
+            const btnId = 'btn-' + pageId.replace('-', '');
+            const activeBtn = document.getElementById(btnId);
+            if(activeBtn) activeBtn.classList.add('active');
+
+
+            // Logic đặc biệt cho các trang
+            if (pageId === 'san-pham') {
+                const productToLoad = itemId || currentPDPItemId;
+                loadProductDetailPage(productToLoad);
+            } else if (pageId === 'gio-hang') {
+                renderCartPage();
+            } else if (pageId === 'danh-gia') {
+                renderReviews(); // Render reviews khi vào trang Đánh giá
+            }
+           
+            window.scrollTo(0, 0);
+        }
+
+
+        // --- KHỞI TẠO HỆ THỐNG ---
+        document.addEventListener('DOMContentLoaded', () => {
+            initData(); // Lấy data giỏ hàng và user
+           
+            // Xử lý submit form (Login/Register)
+            document.getElementById('auth-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const email = document.getElementById('auth-email').value;
+                const password = document.getElementById('auth-password').value;
+
+
+                if (authMode === 'login') {
+                    loginUser(email, password);
+                } else {
+                    registerUser(email, password);
+                }
+            });
+
+
+            // Khởi tạo Model Viewer (chỉ cần chạy 1 lần)
+            document.getElementById('pdp-model-viewer').setAttribute('src', PRODUCT_CATALOG['Base'].model);
+            switchPage('trang-chu');
+        });
+        // === LOAD CHECKOUT PAGE ===
+function renderCheckout() {
+    const name = localStorage.getItem('checkout_name') || "";
+    const phone = localStorage.getItem('checkout_phone') || "";
+    const address = localStorage.getItem('checkout_address') || "";
+
+    document.getElementById("checkout-name").value = name;
+    document.getElementById("checkout-phone").value = phone;
+    document.getElementById("checkout-address").value = address;
+
+    const container = document.getElementById("checkout-items");
+    container.innerHTML = "";
+
+    let total = 0;
+    cartItems.forEach(item => {
+        total += item.price * item.quantity;
+        container.innerHTML += `
+            <div style="padding:8px 0; border-bottom:1px solid #eee;">
+                ${item.name} x ${item.quantity}
+                <b style="float:right">${(item.price * item.quantity).toLocaleString("vi-VN")} VNĐ</b>
+            </div>
+        `;
+    });
+
+    document.getElementById("checkout-total").innerText = 
+        total.toLocaleString("vi-VN") + " VNĐ";
+}
+
+
+// === SAVE ADDRESS REALTIME ===
+document.addEventListener("input", e => {
+    if (e.target.id === "checkout-name") localStorage.setItem("checkout_name", e.target.value);
+    if (e.target.id === "checkout-phone") localStorage.setItem("checkout_phone", e.target.value);
+    if (e.target.id === "checkout-address") localStorage.setItem("checkout_address", e.target.value);
+});
+
+
+// === SUBMIT ORDER ===
+function submitOrder() {
+    alert("Đặt hàng thành công! Thông tin đã lưu.");
+    
+    // Xóa giỏ hàng
+    cartItems = [];
+    localStorage.setItem("cart", JSON.stringify(cartItems));
+    document.getElementById("cart-counter").innerText = 0;
+
+    switchPage("trang-chu");
+}
+    </script>
+</body>
+</html>
+
