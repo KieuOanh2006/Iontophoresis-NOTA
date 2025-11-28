@@ -1,0 +1,15 @@
+<!-- chart-green.svg -->
+<svg width="160" height="100" viewBox="0 0 160 100" xmlns="http://www.w3.org/2000/svg">
+  <polyline
+    fill="none"
+    stroke="#2D9CDB"
+    stroke-width="4"
+    points="10,70 40,40 70,55 100,30 130,45 150,20"
+  />
+  <circle cx="10" cy="70" r="4" fill="#2D9CDB"/>
+  <circle cx="40" cy="40" r="4" fill="#2D9CDB"/>
+  <circle cx="70" cy="55" r="4" fill="#2D9CDB"/>
+  <circle cx="100" cy="30" r="4" fill="#2D9CDB"/>
+  <circle cx="130" cy="45" r="4" fill="#2D9CDB"/>
+  <circle cx="150" cy="20" r="4" fill="#2D9CDB"/>
+</svg>
