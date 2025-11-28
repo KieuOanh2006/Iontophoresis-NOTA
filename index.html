@@ -115,6 +115,98 @@
         /* --- Global styles for hidden sections --- */
         .page-section { display: none; padding: 50px 0; }
         #trang-chu { display: block; }
+        /* === CERTIFICATION + CHART SECTION === */
+.cert-chart-section {
+    .cert-chart-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 50px;
+    flex-wrap: nowrap;  /* ❗ FIX layout dọc */
+}
+
+.cert-logos {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 40px;
+}
+
+.cert-item img {
+    width: 85px;
+    height: auto;
+    object-fit: contain;
+}
+
+    padding: 50px 0;
+    background: #ffffff;
+    margin-top: 40px;
+}
+
+.cert-chart-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.cert-left {
+    flex: 1;
+    min-width: 350px;
+}
+
+.cert-logos {
+    display: flex;
+    gap: 30px;
+    margin-top: 15px;
+}
+
+.cert-item {
+    text-align: center;
+}
+
+.cert-item img {
+    width: 80px;
+    height: auto;
+    margin-bottom: 10px;
+}
+
+.cert-item p {
+    font-size: 0.95em;
+    font-weight: 600;
+}
+
+/* RIGHT SIDE */
+.chart-right {
+    flex: 1;
+    min-width: 350px;
+    text-align: center;
+}
+
+.chart-img {
+    width: 200px;
+    height: auto;
+    margin-bottom: 15px;
+}
+
+.chart-title {
+    font-size: 1.4em;
+    font-weight: 800;
+    color: #27ae60;
+}
+
+.chart-title .percent {
+    color: #2ecc71;
+    font-size: 1.5em;
+}
+
+.chart-sub {
+    margin-top: 5px;
+    font-size: 0.9em;
+    color: #555;
+}
+
     </style>
 </head>
 <body>
@@ -159,7 +251,41 @@
                 <p>Chỉ **15 phút sử dụng** trước khi làm việc hoặc thi đấu — và đôi tay của bạn luôn ổn định trong nhiều giờ liền.</p>
             </div>
         </div>
-       
+       <section class="cert-chart-section">
+    <div class="container cert-chart-wrapper">
+
+        <!-- LEFT SIDE – CERTIFICATIONS -->
+        <div class="cert-left">
+            <h3 class="section-title">Chứng Nhận Y Tế</h3>
+
+            <div class="cert-logos">
+                <div class="cert-item">
+                    <img src="ISO13485.jpg" alt="ISO 13485">
+                    <p>ISO 13485 – Thiết bị y tế</p>
+                </div>
+
+                <div class="cert-item">
+                    <img src="ISO10993.jpg" alt="ISO 10993">
+                    <p>ISO 10993 – An toàn tiếp xúc da</p>
+                </div>
+
+                <div class="cert-item">
+                    <img src="IEC60601.jpg" alt="IEC 60601">
+                    <p>IEC 60601 – Chuẩn an toàn y khoa</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT SIDE – CHART BLOCK -->
+        <div class="chart-right">
+            <img src="chart-green.svg" class="chart-img">
+            <h3 class="chart-title">Hiệu quả giảm mồ hôi tay: <span class="percent">+85%</span></h3>
+            <p class="chart-sub">Theo kết quả trị liệu Iontophoresis</p>
+        </div>
+
+    </div>
+</section>
+
         <div class="container" style="margin-top: 50px;">
             <h2 class="section-title">Chọn Bộ Sưu Tập Của Bạn</h2>
 
@@ -339,6 +465,20 @@
 
             <h3 style="margin-top: 25px;">🛒 Sản phẩm</h3>
             <div id="checkout-items"></div>
+
+            <div id="checkout-discount-box" 
+     style="
+        margin-top:20px;
+        background:#e8f7ff;
+        padding:15px;
+        border-radius:10px;
+        border-left:5px solid #2b92e4;
+     ">
+    <strong style="color:#2b92e4;">🎉 Ưu đãi dành cho bạn</strong>
+    <p style="margin:5px 0 0 0; font-weight:600;">
+        Giảm <span style="color:#d35400;">10%</span> cho đơn hàng đầu tiên!
+    </p>
+</div>
 
             <h3 style="margin-top: 25px;">💳 Phương thức thanh toán</h3>
             <select id="checkout-payment" class="custom-input">
@@ -849,20 +989,43 @@ function renderCheckout() {
     container.innerHTML = "";
 
     let total = 0;
-    cartItems.forEach(item => {
-        total += item.price * item.quantity;
-        container.innerHTML += `
-            <div style="padding:8px 0; border-bottom:1px solid #eee;">
-                ${item.name} x ${item.quantity}
-                <b style="float:right">${(item.price * item.quantity).toLocaleString("vi-VN")} VNĐ</b>
-            </div>
-        `;
-    });
+cartItems.forEach(item => {
+    total += item.price * item.quantity;
 
-    document.getElementById("checkout-total").innerText = 
-        total.toLocaleString("vi-VN") + " VNĐ";
+    container.innerHTML += `
+        <div style="padding:8px 0; border-bottom:1px solid #eee;">
+            ${item.name} x ${item.quantity}
+            <b style="float:right">${(item.price * item.quantity).toLocaleString("vi-VN")} VNĐ</b>
+        </div>
+    `;
+});
+
+// === GIẢM 10% CHO ĐƠN HÀNG ĐẦU TIÊN THEO USER ===
+let storedUsers = JSON.parse(localStorage.getItem("users") || "[]");
+
+let thisUser = storedUsers.find(u => u.email === currentUser.email);
+
+// Nếu user chưa từng đặt hàng → giảm 10%
+let isFirstOrder = !thisUser.hasOrderedBefore;
+let discount = isFirstOrder ? total * 0.10 : 0;
+
+let finalTotal = total - discount;
+
+// Hiển thị UI tổng – giảm – cần thanh toán
+document.getElementById("checkout-total").innerHTML = `
+    <div style="font-size:1em;">Tổng: ${total.toLocaleString("vi-VN")} VNĐ</div>
+
+    ${discount > 0 ? `
+        <div style="color:#27ae60; font-weight:700;">
+            Giảm 10% đơn đầu tiên: -${discount.toLocaleString("vi-VN")} VNĐ
+        </div>` : ""
+    }
+
+    <div style="margin-top:5px; font-size:1.3em; font-weight:800; color:#c0392b;">
+        Cần thanh toán: ${finalTotal.toLocaleString("vi-VN")} VNĐ
+    </div>
+`;
 }
-
 
 // === SAVE ADDRESS REALTIME ===
 document.addEventListener("input", e => {
@@ -874,13 +1037,22 @@ document.addEventListener("input", e => {
 
 // === SUBMIT ORDER ===
 function submitOrder() {
+    // đánh dấu user đã mua
+let storedUsers = JSON.parse(localStorage.getItem("users") || "[]");
+let thisUser = storedUsers.find(u => u.email === currentUser.email);
+
+if (thisUser) {
+    thisUser.hasOrderedBefore = true; 
+    localStorage.setItem("users", JSON.stringify(storedUsers));
+}
+
     alert("Đặt hàng thành công! Thông tin đã lưu.");
     
     // Xóa giỏ hàng
     cartItems = [];
     localStorage.setItem("cart", JSON.stringify(cartItems));
     document.getElementById("cart-counter").innerText = 0;
-
+    localStorage.setItem("hasOrderedBefore", "true");
     switchPage("trang-chu");
 }
     </script>
